@@ -6,6 +6,39 @@
                 background: rgb(4, 159, 248);
                 font-family: Arial, Helvetica, sans-serif;
             }
+
+            .Friends {
+                background: black;
+                position: fixed;
+                max-width: 2000px;
+                width: 25%;
+                height: 98.4%;
+                text-emphasis-color: white;
+            }
+
+            .chat {
+                background: white;
+                position: fixed;
+                max-width: 2000px;
+                width: 73.5%;
+                height: 98.4%;
+                left: 500px;
+            }
+
+            #send {
+                position: fixed;
+                right: 100px;
+                padding: 40px;
+                bottom: 0;
+                max-width: 2000px;
+                width: 60%;
+                display: flex;
+            }
+
+            #message-input {
+                flex-grow: 1;
+            }
+        
         </style>
         <title>
             Chat up
@@ -13,6 +46,8 @@
     </head>
 
     <body>
+        <div class = "Friends"><font color = "white">Friends</font></div>
+        <div class = "chat">chat</div>
         <div id = "message"></div>
         <form id = "send">
             <input type = "text" id = "message-input">
