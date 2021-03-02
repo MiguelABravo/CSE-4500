@@ -1,14 +1,22 @@
 <!DOCTYPE html>
 <html>
     <head>
+        <style>
+            body {
+                background: rgb(4, 159, 248);
+                font-family: Arial, Helvetica, sans-serif;
+            }
+        </style>
         <title>
             Chat up
         </title>
     </head>
 
     <body>
-        <h1>
-            What's on your mind?
-        </h1>
+        <div id = "message"></div>
+        <form id = "send">
+            <input type = "text" id = "message-input">
+            <button type = "submit" id = "send_button">send</button>
+        </form>
     </body>
 </html>
