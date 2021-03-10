@@ -35,9 +35,10 @@
                 display: flex;
             }
 
-            #message-input {
+            #message_input {
                 flex-grow: 1;
             }
+
         
         </style>
         <title>
@@ -48,15 +49,25 @@
     <body>
         <div class = "Friends"><font color = "white">Friends</font></div>
         <div class = "chat">chat</div>
-        <div id = "message"></div>
+        <div id="message"></div>
         <form id = "send">
-            <input type = "text" id = "message-input">
+            <input type = "text" id = "message_input">
             <button type = "submit" id = "send_button">send</button>
         </form>
+
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            var socket = io();
+
+            const sendf = document.getElementById('send')
+            const text = document.getElementById('message_input')
+
+            sendf.addEventListener('submit', ref => {
+                ref.preventDefault()
+                const msg = text.value
+                socket.emit('send_message', msg)
+                text.value = ''
+            })
+        </script>
     </body>
-    
-    <script src="/socket.io/socket.io.js"></script>
-    <script>
-        var socket = io();
-    </script>
 </html>
