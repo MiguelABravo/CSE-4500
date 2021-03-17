@@ -7,27 +7,33 @@
                 font-family: Arial, Helvetica, sans-serif;
             }
 
-            .Friends {
+            /*.Friends {
                 background: black;
                 position: fixed;
                 max-width: 2000px;
                 width: 25%;
                 height: 98.4%;
                 text-emphasis-color: white;
-            }
+            }*/
 
+            /*chat box*/
             .chat {
                 background: white;
                 position: fixed;
                 max-width: 2000px;
                 width: 73.5%;
-                height: 98.4%;
-                left: 500px;
+                height: 98.4%;  
             }
 
+            /*user messages*/
+            #message {
+                position: fixed;
+                top: 5%;
+            }
+            
+            /*send bar*/
             #send {
                 position: fixed;
-                right: 100px;
                 padding: 40px;
                 bottom: 0;
                 max-width: 2000px;
@@ -38,7 +44,6 @@
             #message_input {
                 flex-grow: 1;
             }
-
         
         </style>
         <title>
@@ -61,7 +66,8 @@
 
             const sendf = document.getElementById('send')
             const text = document.getElementById('message_input')
-
+            
+            /*user message sent to client*/
             sendf.addEventListener('submit', ref => {
                 ref.preventDefault()
                 const msg = text.value
