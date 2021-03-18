@@ -6,8 +6,11 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
+/*users message broadcasted everyone*/
 io.on('connection', (socket) => {
-  console.log('new user', socket.id);
+  socket.on('send_message', msg => {
+    socket.broadcast.emit("user_message", msg);
+  });
 });
 
 http.listen(3000, () => {
