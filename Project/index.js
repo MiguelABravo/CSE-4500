@@ -6,7 +6,7 @@ app.get('/', (req, res) => {
   res.sendFile(__dirname + '/index.html');
 });
 
-/*users message broadcasted everyone*/
+/*users message broadcasted to everyone*/
 io.on('connection', (socket) => {
   socket.on('send_message', msg => {
     socket.broadcast.emit("user_message", msg);
