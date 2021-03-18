@@ -64,16 +64,29 @@
         <script>
             var socket = io();
 
-            const sendf = document.getElementById('send')
-            const text = document.getElementById('message_input')
-            
+            const sendf = document.getElementById('send');
+            const text = document.getElementById('message_input');
+            const mes = document.getElementById('message');
+
             /*user message sent to client*/
             sendf.addEventListener('submit', ref => {
-                ref.preventDefault()
-                const msg = text.value
-                socket.emit('send_message', msg)
-                text.value = ''
-            })
+                ref.preventDefault();
+                const msg = text.value;
+                socket.emit('send_message', msg);
+                Message(`You: ${msg}`);
+                text.value = '';
+            });
+
+            socket.on('user_message', data => {
+                Message(data);
+            });
+
+            /*adds each message to the client*/
+            function Message(msg){
+                const mes_ele = document.createElement('div');
+                mes_ele.innerText = msg;
+                mes.append(mes_ele);
+            };
         </script>
     </body>
 </html>
