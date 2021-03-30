@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script>const room_name = "<%= room_name %>"</script>
+        <script defer src="http://localhost:3000/socket.io/socket.io.js"></script>
+        <script defer src="script.js"></script>
+        <style>
+            body {
+                background: rgb(4, 159, 248);
+                font-family: Arial, Helvetica, sans-serif;
+            }
+
+            /*chat box*/
+            .chat {
+                background: white;
+                position: fixed;
+                max-width: 2000px;
+                width: 73.5%;
+                height: 98.4%;  
+            }
+
+            /*user messages*/
+            #message {
+                position: fixed;
+                top: 5%;
+            }
+            
+            /*send bar*/
+            #send {
+                position: fixed;
+                padding: 40px;
+                bottom: 0;
+                max-width: 2000px;
+                width: 60%;
+                display: flex;
+            }
+
+            #message_input {
+                flex-grow: 1;
+            }
+        
+        </style>
+        <title>
+            Chat up
+        </title>
+    </head>
+
+    <body>
+        <div class = "chat">chat</div>
+        <div id="message"></div>
+        <form id = "send">
+            <input type = "text" id = "message_input">
+            <button type = "submit" id = "send_button">send</button>
+        </form>
+    </body>
+</html>
