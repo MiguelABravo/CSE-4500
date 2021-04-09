@@ -1,3 +1,7 @@
+/*
+  Chat app, an app that allows users to create/join chat rooms.
+  I was able to create this app by following watching tutorials.
+*/
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
@@ -12,6 +16,18 @@ const rooms = {};
 http.listen(3000, () => {
   console.log('listening on *:3000');
 });
+
+app.get('/login', (req, res) => {
+  res.render('login.ejs');
+});
+
+app.get('/create', (req, res) => {
+  res.render('create.ejs');
+});
+
+app.post('/create', (req, res) => {
+
+})
 
 app.get('/', (req, res) => {
   res.render('index', {rooms: rooms});
@@ -35,7 +51,7 @@ app.post('/room', (req, res) => {
   {
     return res.redirect('/');
   }
-  io.broadcast.emit('new_room', req.body.room);
+  io.emit('new_room', req.body.room);
 });
 
 /*users message broadcasted to everyone*/
