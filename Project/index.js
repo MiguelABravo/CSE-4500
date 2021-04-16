@@ -145,5 +145,3 @@ function initialize(passport, getUserByName){
   passport.serializeUser((user, done) => { });
   passport.deserializeUser((id, done) => { });
 }
-
-module.exports = initialize;
