@@ -2,7 +2,6 @@
   Chat app, an app that allows users to create/join chat rooms.
   I was able to create this app by watching tutorials.
 */
-
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
@@ -10,7 +9,6 @@ const io = require('socket.io')(http);
 const bcrypt = require('bcrypt');
 const passport = require('passport');
 const local_strat = require ('passport-local').Strategy;
-const { initialize } = require('passport');
 const flash = require('express-flash');
 const session = require ('express-session');
 
@@ -18,6 +16,15 @@ app.set('views', './views');
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(express.urlencoded({extended: true}));
+const Sec = "abc";
+app.use(flash());
+app.use(session({
+  secret: Sec,
+  resave: false,
+  saveUninitialized: false
+}));
+app.use(passport.initialize());
+app.use(passport.session());
 const rooms = {};
 const users = [];
 
@@ -26,7 +33,7 @@ http.listen(3000, () => {
 });
 
 app.get('/', (req, res) => {
-  res.render('index.ejs');
+  res.redirect('/index');
 });
 
 app.get('/login', (req, res) => {
@@ -114,20 +121,10 @@ function getUserRooms(socket) {
 
 
 // passport stuff
-app.use(flash());
-app.use(session({
-  secret: Sec,
-  resave: false,
-  saveUninitialized: false
-}));
-app.use(passport.initialize());
-app.use(passport.session());
+initialize(passport, name => users.find(user => user.name === name))
 
-const Sec = sec;
-pass_port(passport, name => users.find(user => user.name === name))
-
-function pass_port(passport, getUserByName){
-  const authenticateUser = (name, password, done) => {
+function initialize(passport, getUserByName){
+  const authenticateUser = async (name, password, done) => {
     const user = getUserByName(name);
     if (user == null)
       return done(null, false, { message: 'Error: User does not exist'});
@@ -144,7 +141,9 @@ function pass_port(passport, getUserByName){
 
   }
 
-  passport.use(new local_strat({usernameField: 'name'}), authenticateUser);
+  passport.use(new local_strat({usernameField: 'name'}, authenticateUser));
   passport.serializeUser((user, done) => { });
   passport.deserializeUser((id, done) => { });
 }
+
+module.exports = initialize;
