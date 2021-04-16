@@ -124,7 +124,6 @@ app.use(passport.initialize());
 app.use(passport.session());
 
 const Sec = sec;
-module.exports = initialize;
 pass_port(passport, name => users.find(user => user.name === name))
 
 function pass_port(passport, getUserByName){
