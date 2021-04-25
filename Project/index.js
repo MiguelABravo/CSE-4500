@@ -11,6 +11,7 @@ const passport = require('passport');
 const local_strat = require ('passport-local').Strategy;
 const flash = require('express-flash');
 const session = require ('express-session');
+const methodOverride = require('method-override');
 
 app.set('views', './views');
 app.set('view engine', 'ejs');
@@ -25,32 +26,33 @@ app.use(session({
 }));
 app.use(passport.initialize());
 app.use(passport.session());
-const rooms = {};
+app.use(methodOverride('_method'));
+const rooms = { };
 const users = [];
 
 http.listen(3000, () => {
   console.log('listening on *:3000');
 });
 
-app.get('/', (req, res) => {
-  res.redirect('/index');
+app.get('/', checkAuthenticated, (req, res) => {
+  res.render('index', { rooms: rooms, name: req.user.name });
 });
 
-app.get('/login', (req, res) => {
+app.get('/login', checkNotAuthenticated, (req, res) => {
   res.render('login.ejs');
 });
 
-app.post('/login', passport.authenticate('local', {
+app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/login',
   failureFlash: true
-}))
+}));
 
-app.get('/create', (req, res) => {
+app.get('/create', checkNotAuthenticated, (req, res) => {
   res.render('create.ejs');
 });
 
-app.post('/create', async (req, res) => {
+app.post('/create', checkNotAuthenticated, async (req, res) => {
   try {
     const hash_password = await bcrypt.hash(req.body.password, 10);
     users.push({
@@ -66,11 +68,16 @@ app.post('/create', async (req, res) => {
   console.log(users)
 });
 
-app.get('/index', (req, res) => {
+app.delete('/logout', (req, res) => {
+  req.logOut();
+  res.redirect('/login');
+});
+
+app.get('/index', checkAuthenticated, (req, res) => {
   res.render('index.ejs', {rooms: rooms});
 });
 
-app.get('/:room', (req, res) => {
+app.get('/:room', checkAuthenticated, (req, res) => {
   if ( rooms[req.params.room] == null)
   {
     return res.redirect('/index');
@@ -78,7 +85,7 @@ app.get('/:room', (req, res) => {
   res.render('room', {room_name: req.params.room});
 });
 
-app.post('/room', (req, res) => {
+app.post('/room', checkAuthenticated, (req, res) => {
   if ( rooms[req.body.room] == null)
   {
     rooms[req.body.room] = { users: {} };
@@ -121,9 +128,9 @@ function getUserRooms(socket) {
 
 
 // passport stuff
-initialize(passport, name => users.find(user => user.name === name))
+initialize(passport, name => users.find(user => user.name === name), id => users.find(user => user.id === id))
 
-function initialize(passport, getUserByName){
+function initialize(passport, getUserByName, getUserById){
   const authenticateUser = async (name, password, done) => {
     const user = getUserByName(name);
     if (user == null)
@@ -142,6 +149,23 @@ function initialize(passport, getUserByName){
   }
 
   passport.use(new local_strat({usernameField: 'name'}, authenticateUser));
-  passport.serializeUser((user, done) => { });
-  passport.deserializeUser((id, done) => { });
+  passport.serializeUser((user, done) => done(null, user.id));
+  passport.deserializeUser((id, done) => { return done(null, getUserById(id)) });
 }
+
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
+  }
+
+  res.redirect('/login');
+}
+
+function checkNotAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect('/');
+  }
+  next();
+}
+
+module.exports = initialize;
