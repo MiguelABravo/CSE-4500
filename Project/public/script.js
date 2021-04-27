@@ -7,8 +7,7 @@ const roomcon = document.getElementById('roomc');
 
 if (sendf != null) 
 {
-    const name = prompt('Enter name');
-    socket.emit('new-user', room_name, name);
+    socket.emit('new-user', room_name, userN);
 
     /*user message sent to client*/
     sendf.addEventListener('submit', ref => {
