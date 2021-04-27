@@ -74,7 +74,7 @@ app.delete('/logout', (req, res) => {
 });
 
 app.get('/index', checkAuthenticated, (req, res) => {
-  res.render('index.ejs', {rooms: rooms});
+  res.render('index.ejs', {rooms: rooms, name: req.user.name});
 });
 
 app.get('/:room', checkAuthenticated, (req, res) => {
@@ -82,7 +82,7 @@ app.get('/:room', checkAuthenticated, (req, res) => {
   {
     return res.redirect('/index');
   }
-  res.render('room', {room_name: req.params.room});
+  res.render('room', {room_name: req.params.room, userN: req.user.name});
 });
 
 app.post('/room', checkAuthenticated, (req, res) => {
