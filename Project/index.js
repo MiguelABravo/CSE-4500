@@ -100,7 +100,7 @@ app.post('/room', checkAuthenticated, (req, res) => {
 
 /*users message broadcasted to everyone*/
 io.on('connection', (socket) => {
-  //new user code is not my code, I will change it when I add google authentication
+  //new user code is not my code, I didn't have to have change after all since i am using passport
   socket.on('new-user', (room, name) => {
     socket.join(room);
     rooms[room].users[socket.id] = name;
@@ -109,7 +109,7 @@ io.on('connection', (socket) => {
   socket.on('send_message', (room, msg) => {
     socket.to(room).broadcast.emit("user_message", {msg: msg, name: rooms[room].users[socket.id] });
   });
-  // I'm going to change disconnect code
+  // not my code, I didn't have to have change after all since i am using passport
   socket.on('disconnect', () => {
     getUserRooms(socket).forEach(room => {
       socket.to(room).broadcast.emit('user-disconnected', rooms[room].users[socket.id]);
@@ -118,7 +118,7 @@ io.on('connection', (socket) => {
   });
 });
 
-// I'm going to change getUserRooms code
+// not my code, I didn't have to have change after all since i am using passport
 function getUserRooms(socket) {
   return Object.entries(rooms).reduce((names, [name, room]) => {
     if (room.users[socket.id] != null) names.push(name)
