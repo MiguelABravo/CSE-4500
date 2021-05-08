@@ -12,7 +12,10 @@ const local_strat = require ('passport-local').Strategy;
 const flash = require('express-flash');
 const session = require ('express-session');
 const methodOverride = require('method-override');
+const mongoose = require('mongoose');
 
+//mongodb stuff
+const User = require('./models/user');
 app.set('views', './views');
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
