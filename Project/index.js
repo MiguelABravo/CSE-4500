@@ -38,6 +38,7 @@ app.use(passport.session());
 app.use(methodOverride('_method'));
 const rooms = { };
 const users = [];
+var newuser;
 
 http.listen(3000, () => {
   console.log('listening on *:3000');
@@ -47,7 +48,12 @@ app.get('/', checkAuthenticated, (req, res) => {
   res.render('index', { rooms: rooms, name: req.user.name });
 });
 
-app.get('/login', checkNotAuthenticated, (req, res) => {
+app.get('/login', checkNotAuthenticated, async (req, res) => {
+ // push all data from mongodb into users array
+  const cursor = db.collection('newusers').find();
+  cursor.forEach(function(doc, err){
+    users.push(doc);
+  });
   res.render('login.ejs');
 });
 
@@ -64,11 +70,19 @@ app.get('/create', checkNotAuthenticated, (req, res) => {
 app.post('/create', checkNotAuthenticated, async (req, res) => {
   try {
     const hash_password = await bcrypt.hash(req.body.password, 10);
+    // push new users into users array
     users.push({
       id: Date.now().toString(),
       name: req.body.name,
       password: hash_password
     });
+    // stores new users data into mongodb
+    newuser = new User ({
+      id: Date.now().toString(),
+      name: req.body.name,
+      password: hash_password
+    });
+    newuser.save();
     res.redirect('/login');
   }
   catch{
@@ -137,7 +151,7 @@ function getUserRooms(socket) {
 
 
 // passport stuff
-initialize(passport, name => users.find(user => user.name === name), id => users.find(user => user.id === id))
+initialize(passport, name =>  users.find(user => user.name === name), id => users.find(user => user.id === id))
 
 function initialize(passport, getUserByName, getUserById){
   const authenticateUser = async (name, password, done) => {
@@ -154,7 +168,6 @@ function initialize(passport, getUserByName, getUserById){
     catch(e){
       return done (e);
     }
-
   }
 
   passport.use(new local_strat({usernameField: 'name'}, authenticateUser));
